@@ -12,14 +12,12 @@
 <body>
 
 <div id="app">
-  <input type="text" />
+  <input type="text" v-model.trim="search" />
   <ul>
-    <li>Email</li>
-    <li class="marked">Email</li>
-    <li class="marked">Email</li>
-    <li>Email</li>
-    <li>Email</li>
-    <li>...</li>
+    <li 
+      v-for="email in filteredEmails"
+      :class="{ marked: email.find }"
+    >{{ email.text }}</li>
   </ul>
 </div>
 
