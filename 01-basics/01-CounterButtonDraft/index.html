@@ -3,10 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>CounterButton</title>
+  <style>
+    #app button {
+      font-size: 24px;
+      padding: 20px 40px;
+      margin-top: 10%;
+      margin-left: 10%;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
 
 <!-- Решение -->
+<div id="app">
+  <button @click="increase">{{ counter }}</button>
+</div>
 
 <script type="module" src="script.js"></script>
 </body>
