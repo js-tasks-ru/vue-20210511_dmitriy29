@@ -70,6 +70,11 @@ const app = new Vue({
         }),
         cover: this.rawMeetup.imageId && getImageUrlByImageId(this.rawMeetup.imageId),
         coverStyle: this.rawMeetup.imageId && { '--bg-url': `url(${getImageUrlByImageId(this.rawMeetup.imageId)})` },
+        agenda: this.rawMeetup.agenda.map((item) => ({
+          ...item,
+          iconSrc: this.getAgendaIcon(item.type),
+          titleText: this.getAgendaTitle(item.type)
+        })),
       });
     }
   },

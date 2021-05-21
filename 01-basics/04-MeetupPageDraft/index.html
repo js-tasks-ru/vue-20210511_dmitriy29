@@ -16,7 +16,7 @@
 <body>
 <div id="app" v-cloak>
   <div v-if="meetup">
-    <div class="meetup-cover" :style="[ meetup.imageId ? meetup.coverStyle : '' ]">
+    <div class="meetup-cover" :style="meetup.imageId ? meetup.coverStyle : ''">
       <h1 class="meetup-cover__title">{{ meetup.title }}</h1>
     </div>
 
@@ -30,11 +30,11 @@
           <div v-if="meetup.agenda.length" class="meetup-agenda">
             <div v-for="item in meetup.agenda" class="meetup-agenda__item">
               <div class="meetup-agenda__item-col">
-                <img class="icon" alt="icon" :src="getAgendaIcon(item.type)" />
+                <img class="icon" alt="icon" :src="item.iconSrc" />
               </div>
               <div class="meetup-agenda__item-col">{{ item.startsAt }} - {{ item.endsAt }}</div>
               <div class="meetup-agenda__item-col">
-                <h5 class="meetup-agenda__title">{{ getAgendaTitle(item.type) }}</h5>
+                <h5 class="meetup-agenda__title">{{ item.titleText }}</h5>
                 <p v-if="item.type === 'talk'">
                   <span>{{ item.speaker }}</span><span class="meetup-agenda__dot"></span><span class="meetup-agenda__lang">{{ item.language }}</span>
                 </p>
