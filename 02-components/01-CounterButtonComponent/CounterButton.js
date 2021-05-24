@@ -9,18 +9,34 @@ const CounterButton = {
   props: {
     count: {
       type: Number,
-      default: 0
+      default: 0,
     },
     value: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
 
   data() {
     return {
-      counter: 0
-    }
+      counter: 0,
+    };
+  },
+
+  watch: {
+    count: {
+      immediate: true,
+      handler(newValue) {
+        this.counter = newValue;
+      },
+    },
+
+    value: {
+      immediate: true,
+      handler(newValue) {
+        this.counter = newValue;
+      },
+    },
   },
 
   methods: {
@@ -28,13 +44,13 @@ const CounterButton = {
       this.counter += 1;
       this.$emit('increment', this.counter);
       this.$emit('input', this.counter);
-    }
+    },
   },
 
   created() {
     this.counter = this.count || this.value;
   },
-  
+
   template: `<button type="button" @click="increase">{{ counter }}</button>`,
 };
 
