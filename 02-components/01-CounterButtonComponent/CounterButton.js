@@ -1,14 +1,41 @@
 const CounterButton = {
+  // Компонент должен иметь входной параметр
+  // Компонент должен иметь модель
+  // Шаблон лучше держать максимально простым, а логику выносить в методы
+  // Шаблон потребуется отредактировать
+
   name: 'CounterButton',
 
-  // Компонент должен иметь входной параметр
+  props: {
+    count: {
+      type: Number,
+      default: 0
+    },
+    value: {
+      type: Number,
+      default: 0
+    }
+  },
 
-  // Компонент должен иметь модель
+  data() {
+    return {
+      counter: 0
+    }
+  },
 
-  // Шаблон лучше держать максимально простым, а логику выносить в методы
+  methods: {
+    increase() {
+      this.counter += 1;
+      this.$emit('increment', this.counter);
+      this.$emit('input', this.counter);
+    }
+  },
 
-  // Шаблон потребуется отредактировать
-  template: `<button type="button"></button>`,
+  created() {
+    this.counter = this.count || this.value;
+  },
+  
+  template: `<button type="button" @click="increase">{{ counter }}</button>`,
 };
 
 export default CounterButton;

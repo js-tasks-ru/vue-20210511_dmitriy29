@@ -6,6 +6,7 @@ const API_URL = 'https://course-vue.javascript.ru/api';
 /** ID митапа для примера; используйте его при получении митапа */
 const MEETUP_ID = 6;
 
+/** ID митапа для примера; используйте его при получении митапа */
 const DEFAULT_TYPE = 'other';
 
 /**
@@ -51,7 +52,7 @@ const app = new Vue({
   data() {
     return {
       rawMeetup: null,
-    };
+    }
   },
 
   computed: {
@@ -72,10 +73,10 @@ const app = new Vue({
         agenda: this.rawMeetup.agenda.map((item) => ({
           ...item,
           iconSrc: this.getAgendaIcon(item.type),
-          titleText: this.getAgendaTitle(item.type),
+          titleText: this.getAgendaTitle(item.type)
         })),
       });
-    },
+    }
   },
 
   mounted() {
@@ -97,7 +98,7 @@ const app = new Vue({
 
     getAgendaTitle(title) {
       return agendaItemDefaultTitles[title] ?? agendaItemDefaultTitles[DEFAULT_TYPE];
-    },
+    }
   },
 
   template: `#app`,
