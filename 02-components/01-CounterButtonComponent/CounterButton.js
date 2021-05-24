@@ -6,12 +6,13 @@ const CounterButton = {
 
   name: 'CounterButton',
 
+  model: {
+    prop: 'count',
+    event: 'increment',
+  },
+
   props: {
     count: {
-      type: Number,
-      default: 0,
-    },
-    value: {
       type: Number,
       default: 0,
     },
@@ -30,25 +31,13 @@ const CounterButton = {
         this.counter = newValue;
       },
     },
-
-    value: {
-      immediate: true,
-      handler(newValue) {
-        this.counter = newValue;
-      },
-    },
   },
 
   methods: {
     increase() {
       this.counter += 1;
       this.$emit('increment', this.counter);
-      this.$emit('input', this.counter);
     },
-  },
-
-  created() {
-    this.counter = this.count || this.value;
   },
 
   template: `<button type="button" @click="increase">{{ counter }}</button>`,
