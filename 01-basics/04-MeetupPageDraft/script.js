@@ -52,7 +52,7 @@ const app = new Vue({
   data() {
     return {
       rawMeetup: null,
-    }
+    };
   },
 
   computed: {
@@ -73,10 +73,10 @@ const app = new Vue({
         agenda: this.rawMeetup.agenda.map((item) => ({
           ...item,
           iconSrc: this.getAgendaIcon(item.type),
-          titleText: this.getAgendaTitle(item.type)
+          titleText: item.title ?? agendaItemDefaultTitles[item.type],
         })),
       });
-    }
+    },
   },
 
   mounted() {
@@ -95,10 +95,6 @@ const app = new Vue({
         ? `/assets/icons/icon-${agendaItemIcons[type]}.svg`
         : `/assets/icons/icon-${DEFAULT_TYPE}.svg`;
     },
-
-    getAgendaTitle(title) {
-      return agendaItemDefaultTitles[title] ?? agendaItemDefaultTitles[DEFAULT_TYPE];
-    }
   },
 
   template: `#app`,
