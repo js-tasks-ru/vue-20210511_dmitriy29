@@ -19,7 +19,17 @@ const CounterButton = {
 
   data() {
     return {
-      counter: 0
+      counter: this.inputCount || this.inputValue,
+      // counter: 0,
+    }
+  },
+
+  computed: {
+    inputCount() {
+      return this.count;
+    },
+    inputValue() {
+      return this.value;
     }
   },
 
@@ -32,7 +42,7 @@ const CounterButton = {
   },
 
   created() {
-    this.counter = this.count || this.value;
+    this.counter = this.inputCount || this.inputValue;
   },
   
   template: `<button type="button" @click="increase">{{ counter }}</button>`,
