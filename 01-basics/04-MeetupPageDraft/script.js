@@ -79,24 +79,26 @@ const app = new Vue({
     }
   },
 
+  mounted() {
+    this.setMeetup(MEETUP_ID);
+  },
+
   methods: {
     async setMeetup(id) {
       await fetch(`https://course-vue.javascript.ru/api/meetups/${id}`)
-      .then(res => res.json())
-      .then(data => this.rawMeetup = data);
+        .then((res) => res.json())
+        .then((data) => (this.rawMeetup = data));
     },
+
     getAgendaIcon(type) {
-      return agendaItemIcons[type] 
+      return agendaItemIcons[type]
         ? `/assets/icons/icon-${agendaItemIcons[type]}.svg`
-        : `/assets/icons/icon-${DEFAULT_TYPE}.svg`
+        : `/assets/icons/icon-${DEFAULT_TYPE}.svg`;
     },
+
     getAgendaTitle(title) {
       return agendaItemDefaultTitles[title] ?? agendaItemDefaultTitles[DEFAULT_TYPE];
     }
-  },
-
-  mounted() {
-    this.setMeetup(MEETUP_ID);
   },
 
   template: `#app`,
