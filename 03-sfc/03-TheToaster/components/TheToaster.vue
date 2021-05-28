@@ -1,34 +1,51 @@
 <template>
-  <div class="toasts">
-    <div class="toast toast_success">
-      <app-icon icon="check-circle" />
-      <span>Success 1</span>
-    </div>
-    <div class="toast toast_success">
-      <app-icon icon="check-circle" />
-      <span>Success 2</span>
-    </div>
-    <!-- ... -->
-    <div class="toast toast_error">
-      <app-icon icon="alert-circle" />
-      <span>Error 1</span>
-    </div>
+  <div v-if="toasts.length" class="toasts">
+    <toast-item v-for="(toast, idx) in toasts"
+    :key="idx"
+    :itemId="idx"
+    :item="toast"
+    @delete="delToast($event)"></toast-item>
   </div>
 </template>
 
 <script>
-import AppIcon from './AppIcon';
+import ToastItem from './ToastItem';
 
 // const DELAY = 5000;
 
 export default {
   name: 'TheToaster',
 
-  components: { AppIcon },
+  components: { ToastItem },
+
+  data() {
+    return {
+      toasts: [],
+    };
+  },
 
   methods: {
-    // error(message) {},
-    // success(message) {},
+    error(message) {
+      this.toasts.push({
+        icon: 'alert-circle',
+        class: 'toast_error',
+        message,
+      });
+    },
+
+    success(message) {
+      this.toasts.push({
+        icon: 'check-circle',
+        class: 'toast_success',
+        message,
+      });
+    },
+
+    delToast(id) {
+      if (this.toasts.find((toast) => toast.id === id)) {
+        this.toasts.splice(id, 1);
+      }
+    },
   },
 };
 </script>
