@@ -1,17 +1,13 @@
 <template>
   <div v-if="toasts.length" class="toasts">
-    <toast-item v-for="(toast, idx) in toasts"
-    :key="idx"
-    :itemId="idx"
-    :item="toast"
-    @delete="delToast($event)"></toast-item>
+    <toast-item v-for="(toast, idx) in toasts" :key="idx" :item="toast"></toast-item>
   </div>
 </template>
 
 <script>
 import ToastItem from './ToastItem';
 
-// const DELAY = 5000;
+const DELAY = 5000;
 
 export default {
   name: 'TheToaster',
@@ -26,24 +22,33 @@ export default {
 
   methods: {
     error(message) {
+      const id = Date.now();
       this.toasts.push({
+        id,
         icon: 'alert-circle',
         class: 'toast_error',
         message,
       });
+      this.dismissToast(id);
     },
 
     success(message) {
+      const id = Date.now();
       this.toasts.push({
+        id,
         icon: 'check-circle',
         class: 'toast_success',
         message,
       });
+      this.dismissToast(id);
     },
 
-    delToast(id) {
-      if (this.toasts.find((toast) => toast.id === id)) {
-        this.toasts.splice(id, 1);
+    dismissToast(id) {
+      if (this.toasts) {
+        setTimeout(() => {
+          const idx = this.toasts.findIndex((toast) => toast.id === id);
+          this.toasts.splice(idx, 1);
+        }, DELAY);
       }
     },
   },
