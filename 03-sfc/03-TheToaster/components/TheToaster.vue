@@ -1,34 +1,56 @@
 <template>
-  <div class="toasts">
-    <div class="toast toast_success">
-      <app-icon icon="check-circle" />
-      <span>Success 1</span>
-    </div>
-    <div class="toast toast_success">
-      <app-icon icon="check-circle" />
-      <span>Success 2</span>
-    </div>
-    <!-- ... -->
-    <div class="toast toast_error">
-      <app-icon icon="alert-circle" />
-      <span>Error 1</span>
-    </div>
+  <div v-if="toasts.length" class="toasts">
+    <toast-item v-for="(toast, idx) in toasts" :key="idx" :item="toast"></toast-item>
   </div>
 </template>
 
 <script>
-import AppIcon from './AppIcon';
+import ToastItem from './ToastItem';
 
-// const DELAY = 5000;
+const DELAY = 5000;
 
 export default {
   name: 'TheToaster',
 
-  components: { AppIcon },
+  components: { ToastItem },
+
+  data() {
+    return {
+      toasts: [],
+    };
+  },
 
   methods: {
-    // error(message) {},
-    // success(message) {},
+    error(message) {
+      const id = Date.now();
+      this.toasts.push({
+        id,
+        icon: 'alert-circle',
+        class: 'toast_error',
+        message,
+      });
+      this.dismissToast(id);
+    },
+
+    success(message) {
+      const id = Date.now();
+      this.toasts.push({
+        id,
+        icon: 'check-circle',
+        class: 'toast_success',
+        message,
+      });
+      this.dismissToast(id);
+    },
+
+    dismissToast(id) {
+      if (this.toasts) {
+        setTimeout(() => {
+          const idx = this.toasts.findIndex((toast) => toast.id === id);
+          this.toasts.splice(idx, 1);
+        }, DELAY);
+      }
+    },
   },
 };
 </script>
