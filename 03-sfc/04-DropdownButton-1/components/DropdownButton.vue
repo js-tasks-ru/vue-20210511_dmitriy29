@@ -68,15 +68,18 @@ export default {
     },
 
     selectedIcon() {
-      return this.value ? this.options.find((item) => item.value === this.value).icon : null;
+      return this.currentItem ? this.currentItem.icon : null;
     },
 
     dropDownBtnTitle() {
       if (!this.value) {
         return this.title;
       }
-      const valText = this.options.find((item) => item.value === this.value);
-      return valText ? `${this.title} - ${valText.text}` : this.title;
+      return this.currentItem ? `${this.title} - ${this.currentItem.text}` : this.title;
+    },
+
+    currentItem() {
+      return this.value ? this.options.find((item) => item.value === this.value) : null;
     },
   },
 
