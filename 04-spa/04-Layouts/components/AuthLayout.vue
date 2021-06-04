@@ -1,8 +1,19 @@
-<template></template>
+<template>
+  <div class="page page_onboarding">
+    <h3>{{ title }}</h3>
+    <slot></slot>
+  </div>
+</template>
 
 <script>
 export default {
   name: 'AuthLayout',
+
+  props: {
+    title: {
+      type: String,
+    },
+  },
 };
 </script>
 
