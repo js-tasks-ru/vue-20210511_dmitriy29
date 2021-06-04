@@ -16,6 +16,11 @@ export const router = new VueRouter({
       component: MeetupsPage,
     },
     {
+      path: '/index',
+      name: 'index',
+      component: MeetupsPage,
+    },
+    {
       path: '/login',
       name: 'login',
       component: LoginPage,
