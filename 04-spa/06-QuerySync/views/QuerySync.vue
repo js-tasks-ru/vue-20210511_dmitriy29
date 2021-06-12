@@ -1,5 +1,10 @@
 <template>
-  <meetups-view :view.sync="view" :date.sync="date" :participation.sync="participation" :search.sync="search" />
+  <meetups-view
+    :view.sync="query.view"
+    :date.sync="query.date"
+    :participation.sync="query.participation"
+    :search.sync="query.search"
+  />
 </template>
 
 <script>
@@ -14,10 +19,12 @@ export default {
 
   data() {
     return {
-      view: 'list',
-      date: 'all',
-      participation: 'all',
-      search: '',
+      query: {
+        view: 'list',
+        date: 'all',
+        participation: 'all',
+        search: '',
+      },
     };
   },
 
@@ -27,15 +34,15 @@ export default {
       immediate: true,
       handler(newVal) {
         if (Object.keys(newVal).length) {
-          if (newVal.view) this.view = newVal.view;
-          if (newVal.date) this.date = newVal.date;
-          if (newVal.participation) this.participation = newVal.participation;
-          if (newVal.search) this.search = newVal.search;
+          if (newVal.view) this.query.view = newVal.view;
+          if (newVal.date) this.query.date = newVal.date;
+          if (newVal.participation) this.query.participation = newVal.participation;
+          if (newVal.search) this.query.search = newVal.search;
         }
       },
     },
 
-    $data: {
+    query: {
       deep: true,
       immediate: true,
       handler(newVal) {
@@ -45,16 +52,13 @@ export default {
         if (newVal.participation !== 'all') q.participation = newVal.participation;
         if (newVal.search) q.search = newVal.search;
         this.routeUpdate(q);
-        // if (Object.keys(q).length) {
-        //   this.routeUpdate(q);
-        // }
       },
     },
   },
 
   methods: {
     routeUpdate(query) {
-      this.$router.push({ path: '/', query: query }).catch((err) => {
+      this.$router.push({ query: query }).catch((err) => {
         if (!isNavigationFailure(err, NavigationFailureType.duplicated)) {
           throw err;
         }
