@@ -1,16 +1,102 @@
 <template>
-  <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
-    <img class="icon" />
+  <div
+    class="input-group"
+    :class="{
+      'input-group_icon': hasIcons,
+      'input-group_icon-left': leftIcon,
+      'input-group_icon-right': rightIcon,
+    }"
+  >
+    <slot v-if="$slots['left-icon']" name="left-icon" />
 
-    <input ref="" class="form-control form-control_rounded form-control_sm" />
+    <component
+      :is="inputComponent"
+      ref="input"
+      :value.prop="value"
+      class="form-control"
+      :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }"
+      v-bind="$attrs"
+      v-on="listeners"
+    ></component>
 
-    <img class="icon" />
+    <slot v-if="$slots['right-icon']" name="right-icon" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'AppInput',
+
+  inheritAttrs: false,
+
+  model: {
+    prop: 'value',
+    event: 'input',
+  },
+
+  props: {
+    small: {
+      type: Boolean,
+      default: false,
+    },
+
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
+
+    multiline: {
+      type: Boolean,
+      default: false,
+    },
+
+    value: {
+      type: String,
+    },
+  },
+
+  data() {
+    return {
+      hasIcons: false,
+      leftIcon: false,
+      rightIcon: false,
+    };
+  },
+
+  computed: {
+    inputComponent() {
+      return this.multiline ? 'textarea' : 'input';
+    },
+
+    listeners() {
+      return {
+        ...this.$listeners,
+        input: ($event) => {
+          this.$emit('input', $event.target.value);
+        },
+
+        change: ($event) => {
+          this.$emit('change', $event.target.value);
+        },
+      };
+    },
+  },
+
+  mounted() {
+    this.updateHasIcons();
+  },
+
+  updated() {
+    this.updateHasIcons();
+  },
+
+  methods: {
+    updateHasIcons() {
+      this.leftIcon = !!this.$slots['left-icon'];
+      this.rightIcon = !!this.$slots['right-icon'];
+      this.hasIcons = this.leftIcon || this.rightIcon;
+    },
+  },
 };
 </script>
 
