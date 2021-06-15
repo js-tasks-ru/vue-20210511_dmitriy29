@@ -1,6 +1,6 @@
 <template>
   <label class="checkbox">
-    <input type="checkbox" />
+    <input v-model="checkModel" v-bind="$attrs" :value="value" type="checkbox" v-on.native="listeners" />
     <slot />
     <span></span>
   </label>
@@ -9,6 +9,52 @@
 <script>
 export default {
   name: 'AppCheckbox',
+
+  inheritAttrs: false,
+
+  model: {
+    prop: 'checked',
+    event: 'change',
+  },
+
+  props: {
+    value: String,
+    checked: { default: '' },
+  },
+
+  computed: {
+    listeners() {
+      return {
+        ...this.$listeners,
+        change: () => null,
+      };
+    },
+
+    checkModel: {
+      get() {
+        if (Array.isArray(this.checked)) {
+          return this.checked.includes(this.value);
+        }
+        return !!this.checked;
+      },
+
+      set(value) {
+        if (Array.isArray(this.checked)) {
+          let newVal = [...this.checked];
+          if (value) {
+            newVal.push(this.value);
+          } else {
+            newVal.splice(newVal.indexOf(this.value), 1);
+          }
+
+          this.$emit('change', newVal);
+          // this.$emit('change', newVal);
+        } else {
+          this.$emit('change', value);
+        }
+      },
+    },
+  },
 };
 </script>
 
