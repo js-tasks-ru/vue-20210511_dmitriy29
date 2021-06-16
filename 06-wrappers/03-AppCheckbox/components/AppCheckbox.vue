@@ -1,6 +1,6 @@
 <template>
   <label class="checkbox">
-    <input v-model="checkModel" v-bind="$attrs" :value="value" type="checkbox" v-on.native="listeners" />
+    <input v-model="checkModel" v-bind="$attrs" :value="value" type="checkbox" v-on="listeners" />
     <slot />
     <span></span>
   </label>
@@ -18,8 +18,14 @@ export default {
   },
 
   props: {
-    value: String,
-    checked: { default: '' },
+    checked: {
+      type: [Array, Boolean],
+      default: false,
+    },
+
+    value: {
+      default: null,
+    },
   },
 
   computed: {
@@ -32,26 +38,11 @@ export default {
 
     checkModel: {
       get() {
-        if (Array.isArray(this.checked)) {
-          return this.checked.includes(this.value);
-        }
-        return !!this.checked;
+        return this.checked;
       },
 
       set(value) {
-        if (Array.isArray(this.checked)) {
-          let newVal = [...this.checked];
-          if (value) {
-            newVal.push(this.value);
-          } else {
-            newVal.splice(newVal.indexOf(this.value), 1);
-          }
-
-          this.$emit('change', newVal);
-          // this.$emit('change', newVal);
-        } else {
-          this.$emit('change', value);
-        }
+        this.$emit('change', value);
       },
     },
   },
