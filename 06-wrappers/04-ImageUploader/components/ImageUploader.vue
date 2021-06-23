@@ -1,20 +1,109 @@
 <template>
   <div class="image-uploader">
-    <label
-      class="image-uploader__preview image-uploader__preview-loading"
-      style="--bg-image: url('https://course-vue.javascript.ru/api/images/1')"
-    >
-      <span>Удалить изображение</span>
-      <input type="file" accept="image/*" class="form-control-file" />
+    <label class="image-uploader__preview" :class="{ 'image-uploader__preview-loading': loading }" :style="bgImage">
+      <span>{{ imageText }}</span>
+      <input
+        ref="input_image"
+        v-bind="$attrs"
+        type="file"
+        accept="image/*"
+        class="form-control-file"
+        v-on="listeners"
+      />
     </label>
   </div>
 </template>
 
 <script>
-// import { ImageService } from '../ImageService';
+/**
+ * @link https://learn.javascript.ru/taskbook/vue-20210511/workspace/wrappers/ImageUploader
+ * @link https://academind.com/tutorials/vue-image-upload/
+ * @link https://www.digitalocean.com/community/tutorials/vuejs-file-select-component
+ */
+import { ImageService } from '../ImageService';
 
 export default {
   name: 'ImageUploader',
+
+  inheritAttrs: false,
+
+  model: {
+    prop: 'imageId',
+    event: 'change',
+  },
+
+  props: {
+    imageId: {
+      default: null,
+    },
+  },
+
+  data() {
+    return {
+      loading: false,
+      selectedFile: null,
+    };
+  },
+
+  computed: {
+    bgImage() {
+      if (this.selectedFile) {
+        const link = ImageService.getImageURL(this.selectedFile);
+        return `--bg-image: url('${link}')`;
+      }
+      return '';
+    },
+
+    listeners() {
+      return {
+        ...this.$listeners,
+        click: (event) => {
+          window.console.log(event.targed);
+          if (this.imageId) {
+            event.preventDefault();
+            this.clearImage();
+            this.$emit('change', null);
+          } else {
+            this.$emit('click', event);
+          }
+        },
+
+        change: (event) => {
+          this.loading = true;
+          ImageService.uploadImage(event.target.files[0]).then((data) => {
+            this.selectedFile = data.id ?? null;
+            this.loading = false;
+            this.$emit('change', this.selectedFile);
+          });
+        },
+      };
+    },
+
+    imageText() {
+      if (this.loading) {
+        return 'Загрузка...';
+      } else {
+        return this.imageId ? 'Удалить изображение' : 'Загрузить изображение';
+      }
+    },
+  },
+
+  watch: {
+    imageId(newVal) {
+      this.selectedFile = newVal;
+    },
+  },
+
+  mounted() {
+    this.selectedFile = this.imageId;
+  },
+
+  methods: {
+    clearImage() {
+      this.selectedFile = null;
+      this.$refs['input_image'].value = '';
+    },
+  },
 };
 </script>
 
