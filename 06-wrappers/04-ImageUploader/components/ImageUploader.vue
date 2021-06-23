@@ -83,13 +83,12 @@ export default {
   },
 
   watch: {
-    imageId(newVal) {
-      this.selectedFile = newVal;
+    imageId: {
+      immediate: true,
+      handler(newVal) {
+        this.selectedFile = newVal;
+      },
     },
-  },
-
-  created() {
-    this.selectedFile = this.imageId;
   },
 
   methods: {
