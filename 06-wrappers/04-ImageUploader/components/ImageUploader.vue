@@ -15,11 +15,6 @@
 </template>
 
 <script>
-/**
- * @link https://learn.javascript.ru/taskbook/vue-20210511/workspace/wrappers/ImageUploader
- * @link https://academind.com/tutorials/vue-image-upload/
- * @link https://www.digitalocean.com/community/tutorials/vuejs-file-select-component
- */
 import { ImageService } from '../ImageService';
 
 export default {
@@ -58,7 +53,6 @@ export default {
       return {
         ...this.$listeners,
         click: (event) => {
-          window.console.log(event.targed);
           if (this.imageId) {
             event.preventDefault();
             this.clearImage();
@@ -94,7 +88,7 @@ export default {
     },
   },
 
-  mounted() {
+  created() {
     this.selectedFile = this.imageId;
   },
 
