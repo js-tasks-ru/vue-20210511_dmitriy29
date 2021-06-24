@@ -1,42 +1,53 @@
 <template>
-  <form class="form meetup-form">
+  <form class="form meetup-form" @submit.prevent="handleSubmit">
     <div class="meetup-form__content">
       <fieldset class="form-section">
         <div class="form-group">
           <label>Название</label>
-          <input class="form-control" />
+          <input v-model="localMeetup.title" class="form-control" />
         </div>
         <div class="form-group">
           <label>Дата</label>
-          <input class="form-control" type="date" />
+          <input v-model="localMeetup.date" class="form-control" type="date" />
         </div>
         <div class="form-group">
           <label>Место</label>
-          <input class="form-control" />
+          <input v-model="localMeetup.place" class="form-control" />
         </div>
         <div class="form-group">
           <label>Описание</label>
-          <textarea class="form-control" rows="3"></textarea>
+          <textarea v-model="localMeetup.description" class="form-control" rows="3"></textarea>
         </div>
         <div class="form-group">
           <label>Изображение</label>
-          <image-uploader />
+          <image-uploader v-model="localMeetup.imageId" />
         </div>
       </fieldset>
 
       <h3 class="form__section-title">Программа</h3>
-      <meetup-agenda-item-form class="mb-3" />
+      <meetup-agenda-item-form
+        v-for="(agendaItem, index) in localMeetup.agenda"
+        :key="agendaItem.id"
+        :agenda-item="agendaItem"
+        class="mb-3"
+        @update:agendaItem="updateAgendaItem(index, $event)"
+        @remove="removeAgendaItem(index)"
+      />
 
       <div class="form-section_append">
-        <button type="button" data-test="addAgendaItem">+ Добавить этап программы</button>
+        <button type="button" data-test="addAgendaItem" @click="addAgendaItem">+ Добавить этап программы</button>
       </div>
     </div>
 
     <div class="meetup-form__aside">
       <div class="meetup-form__aside_stick">
         <!-- data-test атрибуты используются для поиска нужного элемента в тестах, не удаляйте их -->
-        <button class="button button_secondary button_block" type="button" data-test="cancel">Отмена</button>
-        <button class="button button_primary button_block" type="submit" data-test="submit">Submit</button>
+        <button class="button button_secondary button_block" type="button" data-test="cancel" @click="$emit('cancel')">
+          Отмена
+        </button>
+        <button class="button button_primary button_block" type="submit" data-test="submit" @click="handleSubmit">
+          {{ submitText }}
+        </button>
       </div>
     </div>
   </form>
@@ -60,12 +71,86 @@ function createAgendaItem() {
   };
 }
 
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+export function deepEqual(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 export default {
   name: 'MeetupForm',
 
   components: {
     ImageUploader,
     MeetupAgendaItemForm,
+  },
+
+  props: {
+    meetup: {
+      type: Object,
+      required: true,
+    },
+
+    submitText: {
+      type: String,
+    },
+  },
+
+  data() {
+    return {
+      localMeetup: null,
+    };
+  },
+
+  watch: {
+    meetup: {
+      deep: true,
+      immediate: true,
+      handler(newValue) {
+        if (!deepEqual(newValue, this.localMeetup)) {
+          this.localMeetup = deepClone(this.meetup);
+        }
+      },
+    },
+
+    localMeetup: {
+      deep: true,
+      handler(newValue) {
+        this.$emit('update:meetup', deepClone(newValue));
+      },
+    },
+  },
+
+  methods: {
+    addAgendaItem() {
+      const newItem = createAgendaItem();
+      newItem.startsAt = this.getAgendaItemStartsAt();
+      this.localMeetup.agenda.push(newItem);
+    },
+
+    updateAgendaItem(index, newItem) {
+      this.localMeetup.agenda.splice(index, 1, newItem);
+    },
+
+    removeAgendaItem(index) {
+      this.localMeetup.agenda.splice(index, 1);
+    },
+
+    getAgendaItemStartsAt() {
+      const agenda = [...this.localMeetup.agenda];
+      const agLength = agenda.length;
+      if (agLength) {
+        return agenda[agLength - 1].endsAt;
+      } else {
+        return '00:00';
+      }
+    },
+
+    handleSubmit() {
+      this.$emit('submit', deepClone(this.localMeetup));
+    },
   },
 };
 </script>
