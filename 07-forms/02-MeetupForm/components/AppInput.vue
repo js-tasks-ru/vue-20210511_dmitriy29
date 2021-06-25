@@ -1,15 +1,32 @@
 <template>
-  <div class="input-group" :class="{ 'input-group_icon': hasIcon, 'input-group_icon-left': hasIcon }">
-    <slot name="left-icon"></slot>
-    <textarea v-if="multiline" class="form-control" :value="value" v-bind="$attrs" v-on="listeners"></textarea>
-    <input v-else class="form-control" :value="value" v-bind="$attrs" v-on="listeners" />
+  <div
+    class="input-group"
+    :class="{
+      'input-group_icon': Boolean($slots['left-icon']) || Boolean($slots['right-icon']),
+      'input-group_icon-left': Boolean($slots['left-icon']),
+      'input-group_icon-right': Boolean($slots['right-icon']),
+    }"
+  >
+    <slot name="left-icon" />
+    <component
+      :is="multiline ? 'textarea' : 'input'"
+      ref="input"
+      class="form-control"
+      :class="{
+        'form-control_rounded': rounded,
+        'form-control_sm': small,
+      }"
+      v-bind="$attrs"
+      :value.prop="value"
+      v-on="listeners"
+    />
+    <slot name="right-icon" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'AppInput',
-
   inheritAttrs: false,
 
   model: {
@@ -19,36 +36,34 @@ export default {
 
   props: {
     value: {},
-    multiline: Boolean,
-  },
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
 
-  data() {
-    return {
-      hasIcon: false,
-    };
+    small: {
+      type: Boolean,
+      default: false,
+    },
+
+    multiline: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
     listeners() {
       return {
         ...this.$listeners,
-        input: ($event) => this.$emit('input', $event.target.value),
-        change: ($event) => this.$emit('change', $event.target.value),
+        input: ($event) => {
+          this.$emit('input', $event.target.value);
+        },
+
+        change: ($event) => {
+          this.$emit('change', $event.target.value);
+        },
       };
-    },
-  },
-
-  mounted() {
-    this.updateHasIcon();
-  },
-
-  updated() {
-    this.updateHasIcon();
-  },
-
-  methods: {
-    updateHasIcon() {
-      this.hasIcon = !!this.$slots['left-icon'];
     },
   },
 };

@@ -26,7 +26,6 @@
 <script>
 export default {
   name: 'AppInput',
-
   inheritAttrs: false,
 
   model: {
