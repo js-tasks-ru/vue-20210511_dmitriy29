@@ -2,28 +2,6 @@
   <form class="form meetup-form" @submit.prevent="handleSubmit">
     <div class="meetup-form__content">
       <fieldset class="form-section">
-<<<<<<< HEAD
-        <div class="form-group">
-          <label>Название</label>
-          <input v-model="localMeetup.title" class="form-control" />
-        </div>
-        <div class="form-group">
-          <label>Дата</label>
-          <input v-model="localMeetup.date" class="form-control" type="date" />
-        </div>
-        <div class="form-group">
-          <label>Место</label>
-          <input v-model="localMeetup.place" class="form-control" />
-        </div>
-        <div class="form-group">
-          <label>Описание</label>
-          <textarea v-model="localMeetup.description" class="form-control" rows="3"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Изображение</label>
-          <image-uploader v-model="localMeetup.imageId" />
-        </div>
-=======
         <form-group label="Название">
           <app-input v-model="localMeetup.title" />
         </form-group>
@@ -39,7 +17,6 @@
         <form-group label="Изображение">
           <image-uploader v-model="localMeetup.imageId" />
         </form-group>
->>>>>>> 6621d3113d8bd0ebd06acb83183c2d2bb0ca979a
       </fieldset>
 
       <h3 class="form__section-title">Программа</h3>
@@ -59,18 +36,8 @@
 
     <div class="meetup-form__aside">
       <div class="meetup-form__aside_stick">
-<<<<<<< HEAD
-        <!-- data-test атрибуты используются для поиска нужного элемента в тестах, не удаляйте их -->
-        <button class="button button_secondary button_block" type="button" data-test="cancel" @click="$emit('cancel')">
-          Отмена
-        </button>
-        <button class="button button_primary button_block" type="submit" data-test="submit" @click="handleSubmit">
-          {{ submitText }}
-        </button>
-=======
         <secondary-button block type="button" data-test="cancel" @click="$emit('cancel')">Отмена</secondary-button>
         <primary-button block type="submit" data-test="submit">{{ submitText }}</primary-button>
->>>>>>> 6621d3113d8bd0ebd06acb83183c2d2bb0ca979a
       </div>
     </div>
   </form>
@@ -99,17 +66,13 @@ function createAgendaItem() {
   };
 }
 
-<<<<<<< HEAD
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export function deepEqual(a, b) {
+function deepEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
-=======
-const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
->>>>>>> 6621d3113d8bd0ebd06acb83183c2d2bb0ca979a
 
 export default {
   name: 'MeetupForm',
@@ -139,45 +102,6 @@ export default {
   data() {
     return {
       localMeetup: deepClone(this.meetup),
-    };
-  },
-
-  methods: {
-    addAgendaItem() {
-      const newItem = createAgendaItem();
-      if (this.localMeetup.agenda.length) {
-        newItem.startsAt = this.localMeetup.agenda[this.localMeetup.agenda.length - 1].endsAt;
-      }
-      this.localMeetup.agenda.push(newItem);
-    },
-
-    updateAgendaItem(index, newItem) {
-      this.localMeetup.agenda.splice(index, 1, newItem);
-    },
-
-    removeAgendaItem(index) {
-      this.localMeetup.agenda.splice(index, 1);
-    },
-
-    handleSubmit() {
-      this.$emit('submit', deepClone(this.localMeetup));
-    },
-  },
-
-  props: {
-    meetup: {
-      type: Object,
-      required: true,
-    },
-
-    submitText: {
-      type: String,
-    },
-  },
-
-  data() {
-    return {
-      localMeetup: null,
     };
   },
 
