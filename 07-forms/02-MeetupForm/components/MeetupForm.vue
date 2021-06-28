@@ -66,7 +66,13 @@ function createAgendaItem() {
   };
 }
 
-const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function deepEqual(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
 
 export default {
   name: 'MeetupForm',
@@ -99,12 +105,29 @@ export default {
     };
   },
 
+  watch: {
+    meetup: {
+      deep: true,
+      immediate: true,
+      handler(newValue) {
+        if (!deepEqual(newValue, this.localMeetup)) {
+          this.localMeetup = deepClone(this.meetup);
+        }
+      },
+    },
+
+    localMeetup: {
+      deep: true,
+      handler(newValue) {
+        this.$emit('update:meetup', deepClone(newValue));
+      },
+    },
+  },
+
   methods: {
     addAgendaItem() {
       const newItem = createAgendaItem();
-      if (this.localMeetup.agenda.length) {
-        newItem.startsAt = this.localMeetup.agenda[this.localMeetup.agenda.length - 1].endsAt;
-      }
+      newItem.startsAt = this.getAgendaItemStartsAt();
       this.localMeetup.agenda.push(newItem);
     },
 
@@ -114,6 +137,16 @@ export default {
 
     removeAgendaItem(index) {
       this.localMeetup.agenda.splice(index, 1);
+    },
+
+    getAgendaItemStartsAt() {
+      const agenda = [...this.localMeetup.agenda];
+      const agLength = agenda.length;
+      if (agLength) {
+        return agenda[agLength - 1].endsAt;
+      } else {
+        return '00:00';
+      }
     },
 
     handleSubmit() {

@@ -40,29 +40,24 @@ export default {
     },
 
     inputValue() {
-      // Если строка - передадим, как есть
       if (typeof this.value === 'string') {
         return this.value;
       }
 
-      // Получим Date для значения
       let date;
       if (Number.isFinite(this.value)) {
         date = new Date(this.value);
       } else if (this.value instanceof Date) {
         date = this.value;
       } else {
-        // Не строка, и не число, и не Date - это какая-то ошибка. Можно вернуть пустую строку
         return '';
       }
 
-      // Соберём строку в нужном формате
       const yyyymmdd = date.toISOString().substring(0, 10);
       const hhmm = date.toISOString().substring(11, 16);
       const hhmmss = date.toISOString().substring(11, 19);
       const yyyymmddThhmm = date.toISOString().substring(0, 16);
 
-      // И вернём строку в нужном формате, в зависимости от тиап и атрибутов
       if (this.type === 'date') {
         return yyyymmdd;
       } else if (this.type === 'time') {
@@ -92,7 +87,7 @@ export default {
       }
 
       this.$emit('change', value);
-      this.$emit('input', value);
+      this.$emit('input', null);
     },
   },
 };

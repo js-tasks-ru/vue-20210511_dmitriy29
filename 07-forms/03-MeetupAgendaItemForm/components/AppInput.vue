@@ -2,25 +2,24 @@
   <div
     class="input-group"
     :class="{
-      'input-group_icon': Boolean($slots['left-icon']) || Boolean($slots['right-icon']),
-      'input-group_icon-left': Boolean($slots['left-icon']),
-      'input-group_icon-right': Boolean($slots['right-icon']),
+      'input-group_icon': hasIcons,
+      'input-group_icon-left': leftIcon,
+      'input-group_icon-right': rightIcon,
     }"
   >
-    <slot name="left-icon" />
+    <slot v-if="$slots['left-icon']" name="left-icon" />
+
     <component
-      :is="multiline ? 'textarea' : 'input'"
+      :is="inputComponent"
       ref="input"
-      class="form-control"
-      :class="{
-        'form-control_rounded': rounded,
-        'form-control_sm': small,
-      }"
-      v-bind="$attrs"
       :value.prop="value"
+      class="form-control"
+      :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }"
+      v-bind="$attrs"
       v-on="listeners"
-    />
-    <slot name="right-icon" />
+    ></component>
+
+    <slot v-if="$slots['right-icon']" name="right-icon" />
   </div>
 </template>
 
@@ -35,13 +34,12 @@ export default {
   },
 
   props: {
-    value: {},
-    rounded: {
+    small: {
       type: Boolean,
       default: false,
     },
 
-    small: {
+    rounded: {
       type: Boolean,
       default: false,
     },
@@ -50,9 +48,25 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    value: {
+      type: String,
+    },
+  },
+
+  data() {
+    return {
+      hasIcons: false,
+      leftIcon: false,
+      rightIcon: false,
+    };
   },
 
   computed: {
+    inputComponent() {
+      return this.multiline ? 'textarea' : 'input';
+    },
+
     listeners() {
       return {
         ...this.$listeners,
@@ -64,6 +78,22 @@ export default {
           this.$emit('change', $event.target.value);
         },
       };
+    },
+  },
+
+  mounted() {
+    this.updateHasIcons();
+  },
+
+  updated() {
+    this.updateHasIcons();
+  },
+
+  methods: {
+    updateHasIcons() {
+      this.leftIcon = !!this.$slots['left-icon'];
+      this.rightIcon = !!this.$slots['right-icon'];
+      this.hasIcons = this.leftIcon || this.rightIcon;
     },
   },
 };
